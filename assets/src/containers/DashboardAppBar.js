@@ -66,7 +66,7 @@ function DashboardAppBar (props) {
               <Link
                 to={{ pathname: `/courses/${courseId}` }}
                 className={classes.homeButton}>
-                  My Learning Analytics: {courseName}
+                {courseName}
               </Link>
             </Typography>
           </Button>
