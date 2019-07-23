@@ -35,7 +35,7 @@ NO_GRADE_STRING = "NO_GRADE"
 
 # string for resource type
 RESOURCE_TYPE_STRING = "resource_type"
-RESOURCE_TYPES = settings.RESOURCE_TYPES
+RESOURCE_VALUES = settings.RESOURCE_VALUES
 
 # how many decimal digits to keep
 DECIMAL_ROUND_DIGIT = 1
@@ -134,7 +134,7 @@ def resource_access_within_week(request, course_id=0):
     filter_list = []
     for filter_value in filter_values:
         if filter_value != '':
-            filter_list += RESOURCE_TYPES[filter_value]['resources']
+            filter_list += RESOURCE_VALUES[filter_value]['resources']
 
     # json for eventlog
     data = {

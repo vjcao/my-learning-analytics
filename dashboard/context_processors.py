@@ -14,6 +14,15 @@ def current_user_course_id(request):
         course_id = db_util.get_default_user_course_id(request.user.username)
     return {'current_user_course_id': course_id}
 
+def current_user_course_resource_types(request):
+    logger.info(current_user_course_id.__name__)
+    course_id = str(request.resolver_match.kwargs.get('course_id'))
+    if not course_id:
+        logger.info("Course ID could not be determined from request, attempting to look up for user {}".format(
+            request.user.username))
+        course_id = db_util.get_default_user_course_id(request.user.username)
+    resource_types = db_util.get_user_course_resource_types(course_id)
+    return {'current_user_course_resource_types': list(resource_types)}
 
 def current_user_courses_info(request):
     logger.info(current_user_courses_info.__name__)

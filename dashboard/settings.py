@@ -39,9 +39,8 @@ LOGIN_URL = '/accounts/login'
 GA_ID = ENV.get('GA_ID', '')
 
 # Resource values from env
-RESOURCE_TYPES = ENV.get("RESOURCE_TYPES", {})
+RESOURCE_VALUES = ENV.get("RESOURCE_VALUES", {})
 RESOURCE_URLS = ENV.get("RESOURCE_URLS", {})
-RESOURCE_VALUES = list(RESOURCE_TYPES.values())
 
 # This is required by flatpages flow. For Example Copyright information in the footer populated from flatpages
 SITE_ID = 1
@@ -133,6 +132,7 @@ TEMPLATES = [
                 'dashboard.context_processors.current_user_courses_info',
                 'dashboard.context_processors.last_updated',
                 'dashboard.context_processors.get_build_info',
+                'dashboard.context_processors.current_user_course_resource_types',
             ],
         },
     },

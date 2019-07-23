@@ -105,6 +105,24 @@ def get_user_courses_info(user_id):
     return course_info
 
 
+def get_user_course_resource_types(course_id):
+    logger.info(get_user_course_resource_types.__name__)
+    resource_list = []
+    resource_types = []
+    with django.db.connection.cursor() as cursor:
+        cursor.execute(f"SELECT distinct resource_type FROM resource where course_id like '%{course_id}'")
+        resources = cursor.fetchall()
+        if resources is not None:
+            for resource in resources:
+                resource_list.append(resource[0])
+    for resource in resource_list:
+        for key, value in settings.RESOURCE_VALUES.items():
+            if resource in value['resources'] and resource not in resource_types:
+                resource_types.append(key)
+    resource_types.sort()
+    return resource_types
+
+
 def get_last_cron_run():
     try:
         c = CronJobLog.objects.filter(is_success=1).latest('end_time')

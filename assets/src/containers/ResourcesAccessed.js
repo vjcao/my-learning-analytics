@@ -45,6 +45,7 @@ const settingNotUpdated = 'Setting not updated'
 function ResourcesAccessed (props) {
   const { classes, courseInfo, courseId } = props
   let resourceValues = RESOURCE_VALUES 
+  let resourceTypes = myla_globals.resource_types
   if (!courseInfo.course_view_options.fa) return (<Error>Resources view is hidden for this course.</Error>)
   const [loaded, error, resourcesDefaultData] = useUserSettingData(courseId, 'resource') // Used to update default setting
   const [minMaxWeek, setMinMaxWeek] = useState([]) // Should be updated from info
@@ -57,12 +58,11 @@ function ResourcesAccessed (props) {
   // initial default value that we get from backend and updated value when user save the default setting
   const [defaultValue, setDefaultValue] = useState('')
 
-  const [checkboxState, setCheckboxState] = useState(RESOURCE_VALUES)
-
   // defaults setting controllers
   const [defaultCheckboxState, setDefaultCheckedState] = useState(true)
   const [defaultLabel, setDefaultLabel] = useState(currentSetting)
 
+  /*
   function getDefaultFilterState() {
     let tempArray = []
     resourceValues.forEach(function(resource_item) {
@@ -70,25 +70,16 @@ function ResourcesAccessed (props) {
     })
     return tempArray
   }
+  */
 
   function checkboxComponent() {
-    useEffect(() => {
-      for (var i = 0; i < resourceAccessData.length; i++) {
-        for (var j = 0; j < resourceValues.length; j++) {
-          if (resourceValues[j].resources.includes(resourceAccessData[i].resource_type)) {
-            resourceValues[j].disabled = "false"
-          }
-        }
-      }
-      setCheckboxState(resourceValues)
-    })
     return(
       <div style={{ textAlign: "center" }}>
         <FormControl>
           <FormGroup row>
             <p style={{fontWeight: "bold"}}>Select Resources to be Viewed:</p>
             {
-              checkboxState.map((el, i) => (<FormControlLabel key={i} control={<Checkbox color='primary' defaultChecked={el.disabled === "false"} onChange={onChangeResourceHandler} value={el.resource_value} disabled={el.disabled == "true"}></Checkbox>} label={el.resource_label}/>))
+              resourceTypes.map((el, i) => (<FormControlLabel key={i} control={<Checkbox color='primary' defaultChecked={true} onChange={onChangeResourceHandler} value={resourceValues[el].value}></Checkbox>} label={resourceValues[el].label}/>))
             }
           </FormGroup>
         </FormControl>
@@ -169,15 +160,14 @@ function ResourcesAccessed (props) {
     if (loaded) {
       if (resourcesDefaultData.default !== '') {
         setGradeRangeFilter(resourcesDefaultData.default)
-        setResourceFilter(resourceFilter.concat(getDefaultFilterState()))
         setDefaultValue(resourcesDefaultData.default)
       } else {
         // setting it to default
         setGradeRangeFilter('All')
-        setResourceFilter(resourceFilter.concat(getDefaultFilterState()))
         setDefaultValue('All')
       }
       setDataControllerLoad(dataControllerLoad + 1)
+      setResourceFilter(resourceFilter.concat(resourceTypes))
     }
   }, [loaded])
 
@@ -226,11 +216,9 @@ function ResourcesAccessed (props) {
   const onChangeResourceHandler = event => {
     const value = event.target.value
     if (event.target.checked && !resourceFilter.includes(value)) {
-      setCheckboxState(resourceValues)
       setResourceFilter([...resourceFilter, value])
     } 
-    else if (!event.target.checked) { 
-      setCheckboxState(resourceValues)
+    else if (!event.target.checked) {
       setResourceFilter(resourceFilter.filter(val => val !== value))
     }
   }
@@ -298,9 +286,6 @@ function ResourcesAccessed (props) {
             </div>
             {
             checkboxComponent()
-            }
-            {
-            console.log(RESOURCE_VALUES)
             }
             {resourceAccessData
               ? ResourceAccessChartBuilder(resourceAccessData)

@@ -65,6 +65,7 @@
         {% if settings.GA_ID %}
             "google_analytics_id":'{{ settings.GA_ID }}',
         {% endif %}
+        "resource_types": {{ current_user_course_resource_types|safe}}
         }
         
         var RESOURCE_VALUES = {{ settings.RESOURCE_VALUES|safe }}
