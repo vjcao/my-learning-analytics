@@ -44,7 +44,7 @@ const settingNotUpdated = 'Setting not updated'
 
 function ResourcesAccessed (props) {
   const { classes, courseInfo, courseId } = props
-  const resourceValues = RESOURCE_VALUES 
+  let resourceValues = RESOURCE_VALUES 
   if (!courseInfo.course_view_options.fa) return (<Error>Resources view is hidden for this course.</Error>)
   const [loaded, error, resourcesDefaultData] = useUserSettingData(courseId, 'resource') // Used to update default setting
   const [minMaxWeek, setMinMaxWeek] = useState([]) // Should be updated from info
@@ -57,6 +57,8 @@ function ResourcesAccessed (props) {
   // initial default value that we get from backend and updated value when user save the default setting
   const [defaultValue, setDefaultValue] = useState('')
 
+  const [checkboxState, setCheckboxState] = useState(RESOURCE_VALUES)
+
   // defaults setting controllers
   const [defaultCheckboxState, setDefaultCheckedState] = useState(true)
   const [defaultLabel, setDefaultLabel] = useState(currentSetting)
@@ -64,12 +66,49 @@ function ResourcesAccessed (props) {
   function getDefaultFilterState() {
     let tempArray = []
     resourceValues.forEach(function(resource_item) {
-      if (resource_item.disabled === "false") {
-        tempArray.push(resource_item.resource_value)
-      }
+      tempArray.push(resource_item.resource_value)
     })
     return tempArray
   }
+
+  function checkboxComponent() {
+    useEffect(() => {
+      for (var i = 0; i < resourceAccessData.length; i++) {
+        for (var j = 0; j < resourceValues.length; j++) {
+          if (resourceValues[j].resources.includes(resourceAccessData[i].resource_type)) {
+            resourceValues[j].disabled = "false"
+          }
+        }
+      }
+      setCheckboxState(resourceValues)
+    })
+    return(
+      <div style={{ textAlign: "center" }}>
+        <FormControl>
+          <FormGroup row>
+            <p style={{fontWeight: "bold"}}>Select Resources to be Viewed:</p>
+            {
+              checkboxState.map((el, i) => (<FormControlLabel key={i} control={<Checkbox color='primary' defaultChecked={el.disabled === "false"} onChange={onChangeResourceHandler} value={el.resource_value} disabled={el.disabled == "true"}></Checkbox>} label={el.resource_label}/>))
+            }
+          </FormGroup>
+        </FormControl>
+      </div>
+    )
+  }
+
+  /*
+  function updateCheckboxDisabled() {
+    for (var i = 0; i < resourceValues.length; i++) {
+      for (var j = 0; j < resourceAccessData.length; j++) {
+        if (resourceValues[i].resources.includes(resourceAccessData[j].resource_type)) {
+          resourceValues.disabled = "false"
+        }
+      }
+    }
+    setCheckboxState(resourceValues)
+  }
+  */
+  
 
   const changeDefaultSetting = (event) => {
     const didUserChecked = event.target.checked
@@ -144,25 +183,27 @@ function ResourcesAccessed (props) {
 
   useEffect(() => {
     // Fetch data once all the setting data is fetched
-    setTimeout(function() {
-      if (dataControllerLoad === 2 && !(resourceFilter.length === 0)) {
-        const dataURL = `/api/v1/courses/${courseId}/resource_access_within_week?week_num_start=${weekRange[0]}&week_num_end=${weekRange[1]}&grade=${gradeRangeFilter}&resource_type=${resourceFilter}`
-        const fetchOptions = { method: 'get', ...defaultFetchOptions }
-        fetch(dataURL, fetchOptions)
-          .then(handleError)
-          .then(res => res.json())
-          .then(data => {
-            setResourceAccessData(data)
-          })
-          .catch(err => {
-            setResourceAccessData({})
-          })
-      }
-      else {
-        setResourceAccessData({})
-      }
-    }, 3000)
+    if (dataControllerLoad === 2 && !(resourceFilter.length === 0)) {
+      const dataURL = `/api/v1/courses/${courseId}/resource_access_within_week?week_num_start=${weekRange[0]}&week_num_end=${weekRange[1]}&grade=${gradeRangeFilter}&resource_type=${resourceFilter}`
+      const fetchOptions = { method: 'get', ...defaultFetchOptions }
+      fetch(dataURL, fetchOptions)
+        .then(handleError)
+        .then(res => res.json())
+        .then(data => {
+          setResourceAccessData(data)
+        })
+        .catch(err => {
+          setResourceAccessData({})
+        })
+    }
+    else {
+      setResourceAccessData({})
+    }
   }, [dataControllerLoad, weekRange, gradeRangeFilter, resourceFilter])
+
+  
+  
+  
 
   const onWeekChangeHandler = value => {
     // Update week range slider
@@ -185,9 +226,11 @@ function ResourcesAccessed (props) {
   const onChangeResourceHandler = event => {
     const value = event.target.value
     if (event.target.checked && !resourceFilter.includes(value)) {
+      setCheckboxState(resourceValues)
       setResourceFilter([...resourceFilter, value])
     } 
     else if (!event.target.checked) { 
+      setCheckboxState(resourceValues)
       setResourceFilter(resourceFilter.filter(val => val !== value))
     }
   }
@@ -210,6 +253,7 @@ function ResourcesAccessed (props) {
       </Grid>
     )
   }
+  
   if (error) return (<Error>Something went wrong, please try again later.</Error>)
   return (
     <div className={classes.root}>
@@ -252,16 +296,12 @@ function ResourcesAccessed (props) {
               />}
               <div style={{ padding: '15px 2px' }}>{defaultLabel}</div>
             </div>
-            <div style={{ textAlign: "center" }}>
-              <FormControl>
-                <FormGroup row>
-                  <p style={{fontWeight: "bold"}}>Select Resources to be Viewed:</p>
-                  {
-                    resourceValues.map((el, i) => (<FormControlLabel key={i} control={<Checkbox color='primary' defaultChecked={true} onChange={onChangeResourceHandler} value={el.resource_value} disabled={el.disabled === "true"}></Checkbox>} label={el.resource_label}/>))
-                  }
-                </FormGroup>
-              </FormControl>
-            </div>
+            {
+            checkboxComponent()
+            }
+            {
+            console.log(RESOURCE_VALUES)
+            }
             {resourceAccessData
               ? ResourceAccessChartBuilder(resourceAccessData)
               : <Spinner/>}
