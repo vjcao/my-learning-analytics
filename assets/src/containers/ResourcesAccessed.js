@@ -43,10 +43,10 @@ const rememberSetting = 'Remember my setting'
 const settingNotUpdated = 'Setting not updated'
 
 function ResourcesAccessed (props) {
-  const { classes, courseInfo, courseId } = props
-  let resourceValues = RESOURCE_VALUES 
-  let resourceTypes = myla_globals.resource_types
-  if (!courseInfo.course_view_options.fa) return (<Error>Resources view is hidden for this course.</Error>)
+  const { classes, courseInfo, courseId, disabled } = props
+  if (disabled) return (<Error>Files view is hidden for this course.</Error>)
+  const resourceValues = RESOURCE_VALUES 
+  const resourceTypes = myla_globals.resource_types
   const [loaded, error, resourcesDefaultData] = useUserSettingData(courseId, 'resource') // Used to update default setting
   const [minMaxWeek, setMinMaxWeek] = useState([]) // Should be updated from info
   const [curWeek, setCurWeek] = useState(0) // Should be updated from info
@@ -62,16 +62,6 @@ function ResourcesAccessed (props) {
   const [defaultCheckboxState, setDefaultCheckedState] = useState(true)
   const [defaultLabel, setDefaultLabel] = useState(currentSetting)
 
-  /*
-  function getDefaultFilterState() {
-    let tempArray = []
-    resourceValues.forEach(function(resource_item) {
-      tempArray.push(resource_item.resource_value)
-    })
-    return tempArray
-  }
-  */
-
   function checkboxComponent() {
     return(
       <div style={{ textAlign: "center" }}>
@@ -86,20 +76,6 @@ function ResourcesAccessed (props) {
       </div>
     )
   }
-
-  /*
-  function updateCheckboxDisabled() {
-    for (var i = 0; i < resourceValues.length; i++) {
-      for (var j = 0; j < resourceAccessData.length; j++) {
-        if (resourceValues[i].resources.includes(resourceAccessData[j].resource_type)) {
-          resourceValues.disabled = "false"
-        }
-      }
-    }
-    setCheckboxState(resourceValues)
-  }
-  */
-  
 
   const changeDefaultSetting = (event) => {
     const didUserChecked = event.target.checked
@@ -191,9 +167,6 @@ function ResourcesAccessed (props) {
     }
   }, [dataControllerLoad, weekRange, gradeRangeFilter, resourceFilter])
 
-  
-  
-  
 
   const onWeekChangeHandler = value => {
     // Update week range slider
