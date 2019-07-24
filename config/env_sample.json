@@ -122,8 +122,8 @@
     "/*  Enable/Disable Unizin Date Warehouse specific features/data": "*/",
     "DATA_WAREHOUSE_IS_UNIZIN": true,
     "RESOURCE_VALUES": {
-        "files": {"label" :"Files", "value":"files", "resources": ["canvas"]},
-        "videos": {"label":"Videos", "value":"videos", "resources": ["leccap"]}
+        "Files": {"label" :"Files", "value":"Files", "resources": ["canvas"]},
+        "Videos": {"label":"Videos", "value":"Videos", "resources": ["leccap"]}
     },
     "RESOURCE_URLS": {
         "canvas": {"prefix": "https://example.instructure.com/files/", "postfix": "/download?download_frd=1"},

@@ -69,7 +69,7 @@ function ResourcesAccessed (props) {
           <FormGroup row>
             <p style={{fontWeight: "bold"}}>Select Resources to be Viewed:</p>
             {
-              resourceTypes.map((el, i) => (<FormControlLabel key={i} control={<Checkbox color='primary' defaultChecked={true} onChange={onChangeResourceHandler} value={resourceValues[el].value}></Checkbox>} label={resourceValues[el].label}/>))
+              resourceTypes.map((el, i) => (<FormControlLabel key={i} control={<Checkbox color='primary' defaultChecked={true} onChange={onChangeResourceHandler} value={el}></Checkbox>} label={el}/>))
             }
           </FormGroup>
         </FormControl>
@@ -166,7 +166,6 @@ function ResourcesAccessed (props) {
       setResourceAccessData({})
     }
   }, [dataControllerLoad, weekRange, gradeRangeFilter, resourceFilter])
-
 
   const onWeekChangeHandler = value => {
     // Update week range slider
