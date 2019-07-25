@@ -407,7 +407,7 @@ EARLIEST_TERM_DATE = ENV.get('EARLIEST_TERM_DATE', '2016-11-15')
 RUN_AT_TIMES = ENV.get('RUN_AT_TIMES', [])
 
 # Add any settings you need to be available to templates in this array
-SETTINGS_EXPORT = ['LOGIN_URL','LOGOUT_URL','DEBUG', 'GA_ID', 'RESOURCE_VALUES']
+SETTINGS_EXPORT = ['LOGIN_URL','LOGOUT_URL','DEBUG', 'GA_ID']
 
 # Method to show the user, if they're authenticated and superuser
 def show_debug_toolbar(request):
