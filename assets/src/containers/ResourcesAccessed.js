@@ -15,7 +15,7 @@ import { useUserSettingData } from '../service/api'
 import { handleError, defaultFetchOptions } from '../util/data'
 import ResourceAccessChart from '../components/ResourceAccessChart'
 import Cookie from 'js-cookie'
-import Error from './Error'
+import Error from '../components/Error'
 import { type } from 'os';
 
 const styles = theme => ({

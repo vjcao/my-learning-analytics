@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid'
 import SelectCard from '../components/SelectCard'
 import { Link } from 'react-router-dom'
 import { isObjectEmpty, getObjectValues } from '../util/object'
-import Error from './Error'
+import Error from '../components/Error'
 import routes from '../routes/routes'
 
 const styles = theme => ({

@@ -13,7 +13,7 @@ import createToolTip from '../util/createToolTip'
 import TableAssignment from '../components/TableAssignment'
 import Checkbox from '@material-ui/core/Checkbox'
 import Cookie from 'js-cookie'
-import Error from './Error'
+import Error from '../components/Error'
 import { handleError, defaultFetchOptions } from '../util/data'
 import { useUserSettingData } from '../service/api'
 

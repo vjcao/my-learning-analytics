@@ -7,7 +7,7 @@ import AssignmentPlanning from './AssignmentPlanning'
 import ResourcesAccessed from './ResourcesAccessed'
 import IndexPage from './IndexPage'
 import Spinner from '../components/Spinner'
-import Error from './Error'
+import Error from '../components/Error'
 import { isObjectEmpty } from '../util/object'
 import { useCourseInfo } from '../service/api'
 
