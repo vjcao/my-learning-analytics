@@ -190,7 +190,7 @@ function createResourceAccessChart ({ data, width, height, domElement }) {
     const mainYAxis = d3
       .axisLeft(mainYScale)
       .tickSize(0)
-      .tickFormat(d => d.split('|')[1])
+      .tickFormat(d => truncate(d.split('|')[1]))
 
     mainGroup.select('.axis--y').call(mainYAxis)
 
@@ -228,6 +228,8 @@ function createResourceAccessChart ({ data, width, height, domElement }) {
     gBrush.call(brush.move, [center - size / 2, center + size / 2])
   }
 
+  const truncate = (text) => text.length > 20 ? `${text.substring(0, 20)}...` : text
+
   // Main chart group
   const mainGroup = svg.append('g')
     .attr('class', 'mainGroupWrapper')
@@ -257,9 +259,7 @@ function createResourceAccessChart ({ data, width, height, domElement }) {
 
   const mainYAxis = d3.axisLeft(mainYScale)
     .tickSize(0)
-    .tickFormat(d => d.split('|')[1])
-
-  
+    .tickFormat(d => truncate(d.split('|')[1]))
 
   // Brush
   const brush = d3.brushY()
