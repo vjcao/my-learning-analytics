@@ -2,6 +2,7 @@ import * as d3 from 'd3'
 import { adjustViewport } from '../../util/chart'
 import d3tip from 'd3-tip'
 import './createResourceAccessChart.css'
+import '@fortawesome/fontawesome-free'
 
 /*
   References:
@@ -191,6 +192,7 @@ function createResourceAccessChart ({ data, width, height, domElement }) {
       .axisLeft(mainYScale)
       .tickSize(0)
       .tickFormat(d => truncate(d.split('|')[1]))
+      
 
     mainGroup.select('.axis--y').call(mainYAxis)
 
@@ -362,6 +364,15 @@ function createResourceAccessChart ({ data, width, height, domElement }) {
       .attr('xlink:target', '_blank')
       .attr('xlink:href', link)
     a.node().appendChild(this)
+
+    d3.select(this).insert('foreignObject')
+      .attr("x", -80)
+      .attr("y", -8)
+      .attr("width", 16)
+      .attr("height", 16)
+      .append("xhtml:body")
+      .html('<i class="fas fa-video"></i>');
+
   })
 
   yLabel.selectAll('text')

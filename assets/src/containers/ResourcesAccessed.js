@@ -279,6 +279,9 @@ function ResourcesAccessed (props) {
             {
               filterCheckbox()
             }
+            {
+              console.log(resourceAccessData)
+            }
             {(resourceAccessData && dataLoaded) || resourceFilter.length === 0
               ? ResourceAccessChartBuilder(resourceAccessData)
               : <Spinner/>}
