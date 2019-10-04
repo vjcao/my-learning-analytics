@@ -371,7 +371,7 @@ function createResourceAccessChart ({ data, width, height, domElement }) {
       .attr("width", 16)
       .attr("height", 16)
       .append("xhtml:body")
-      .html('<i class="fas fa-video"></i>');
+      .html('<i class="fab fa-apple"></i>');
 
   })
 
