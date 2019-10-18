@@ -107,8 +107,7 @@ function GradeDistribution (props) {
             yAxisLabel={'Number of Students'}
             myGrade={showGrade ? gradeData[0].current_user_grade : null}
             maxGrade={gradeData[0].graph_upper_limit}
-            showNumberOnBars={gradeData[0].show_number_on_bars}
-            showDashedLine={gradeData[0].show_dash_line}/>
+            showNumberOnBars={gradeData[0].show_number_on_bars}/>
         </Grid>
       </Grid>
     )

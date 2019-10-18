@@ -24,18 +24,13 @@ PROJECT_ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), ".."),
 )
 
-if os.getenv("ENV_JSON"):
-    # optionally load settings from an environment variable
-    ENV = json.loads(os.getenv("ENV_JSON"))
-else:
-    # else try loading settings from the json config file
-    try:
-        with open(os.getenv("ENV_FILE", "/secrets/env.json")) as f:
-            ENV = json.load(f)
-    except FileNotFoundError as fnfe:
-        print("Default config file or one defined in environment variable ENV_FILE not found. This is normal for the build, should define for operation")
-        # Set ENV so collectstatic will still run in the build
-        ENV = os.environ
+try:
+    with open(os.getenv("ENV_FILE", "/secrets/env.json")) as f:
+        ENV = json.load(f)
+except FileNotFoundError as fnfe:
+    print("Default config file or one defined in environment variable ENV_FILE not found. This is normal for the build, should define for operation")
+    # Set ENV so collectstatic will still run in the build
+    ENV = os.environ
 
 LOGOUT_URL = '/accounts/logout'
 LOGIN_URL = '/accounts/login'
@@ -103,7 +98,7 @@ INSTALLED_APPS = [
 
 # The order of this is important. It says DebugToolbar should be on top but
 # The tips has it on the bottom
-MIDDLEWARE = [
+MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -137,7 +132,7 @@ TEMPLATES = [
                 'django_settings_export.settings_export',
                 'dashboard.context_processors.current_user_courses_info',
                 'dashboard.context_processors.last_updated',
-                'dashboard.context_processors.get_git_version_info',
+                'dashboard.context_processors.get_build_info',
             ],
         },
     },
@@ -392,15 +387,11 @@ if ENV.get('STUDENT_DASHBOARD_LTI', False):
         "next_url": "home"
     }
     LTI_PERSON_SOURCED_ID_FIELD = ENV.get('LTI_PERSON_SOURCED_ID_FIELD',
-        "custom_canvas_user_login_id")
+        "lis_person_sourcedid")
     LTI_EMAIL_FIELD = ENV.get('LTI_EMAIL_FIELD',
         "lis_person_contact_email_primary")
     LTI_CANVAS_COURSE_ID_FIELD = ENV.get('LTI_CANVAS_COURSE_ID_FIELD',
         "custom_canvas_course_id")
-    LTI_FIRST_NAME = ENV.get('LTI_FIRST_NAME',
-        "lis_person_name_given")
-    LTI_LAST_NAME = ENV.get('LTI_LAST_NAME',
-        "lis_person_name_family")
     
 # controls whether Unizin specific features/data is available from the Canvas Data source
 DATA_WAREHOUSE_IS_UNIZIN = ENV.get("DATA_WAREHOUSE_IS_UNIZIN", True)
@@ -447,19 +438,16 @@ CANVAS_FILE_ID_NAME_SEPARATOR = "|"
 
 RESOURCE_ACCESS_CONFIG = ENV.get("RESOURCE_ACCESS_CONFIG", {})
 
-# Git info settings
-SHA_ABBREV_LENGTH = 7
-
 # Django CSP Settings, load up from file if set
 if "CSP" in ENV:
-    MIDDLEWARE += ['csp.middleware.CSPMiddleware',]
+    MIDDLEWARE_CLASSES += ['csp.middleware.CSPMiddleware',]
     for csp_key, csp_val in ENV.get("CSP").items():
         # If there's a value set for this CSP config, set it as a global
         if (csp_val):
             globals()["CSP_"+csp_key] = csp_val
 # If CSP not set, add in XFrameOptionsMiddleware
 else:
-    MIDDLEWARE += ['django.middleware.clickjacking.XFrameOptionsMiddleware',]
+    MIDDLEWARE_CLASSES += ['django.middleware.clickjacking.XFrameOptionsMiddleware',]
 
 # These are mostly needed by Canvas but it should also be in on general 
 CSRF_COOKIE_SECURE = ENV.get("CSRF_COOKIE_SECURE", False)

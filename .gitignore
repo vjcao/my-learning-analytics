@@ -2,7 +2,6 @@
 saml
 bq_cred.json
 env.json
-demo_init.sh
 .idea/
 .DS_Store
 
