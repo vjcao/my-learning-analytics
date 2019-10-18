@@ -15,6 +15,7 @@ import '@fortawesome/fontawesome-free'
 const accessedResourceColor = 'steelblue'
 const notAccessedResourceColor = 'gray'
 const mainMargin = { top: 50, right: 10, bottom: 50, left: 200 }
+const icons = {files: 'fas fa-file fa-lg', videos: 'fas fa-video fa-lg'}
 
 const toolTip = d3tip().attr('class', 'd3-tip')
   .direction('n').offset([-5, 5])
@@ -230,7 +231,7 @@ function createResourceAccessChart ({ data, width, height, domElement }) {
     gBrush.call(brush.move, [center - size / 2, center + size / 2])
   }
 
-  const truncate = (text) => text.length > 20 ? `${text.substring(0, 20)}...` : text
+  const truncate = (text) => text.length > 9 ? `${text.substring(0, 9)}...` : text
 
   // Main chart group
   const mainGroup = svg.append('g')
@@ -364,14 +365,18 @@ function createResourceAccessChart ({ data, width, height, domElement }) {
       .attr('xlink:target', '_blank')
       .attr('xlink:href', link)
     a.node().appendChild(this)
+    
 
+    let resourceType = d.split('|')[2]
     d3.select(this).insert('foreignObject')
-      .attr("x", -80)
-      .attr("y", -8)
-      .attr("width", 16)
-      .attr("height", 16)
-      .append("xhtml:body")
-      .html('<i class="fab fa-apple"></i>');
+      .attr("x", -90)
+      .attr('y', -6)
+      .attr("width", 32)
+      .attr("height", 32)
+      .append("xhtml:i")
+      .attr('class', function(_) {
+        return icons[resourceType]
+      });
 
   })
 
